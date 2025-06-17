@@ -19,7 +19,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [movieList, setMovieList] = useState([]);
-  const [trendingMoies,setTrendingMovies]=useState([]);
+  const [trendingMovies, setTrendingMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [debounceSearchTerm, setDebounceSearchTerm] = useState("");
 
@@ -46,10 +46,9 @@ const App = () => {
       }
 
       setMovieList(data.results || []);
-      if(query && data.results.length>0){
-updateSearchCount(query, data.results[0]);
+      if (query && data.results.length > 0) {
+        updateSearchCount(query, data.results[0]);
       }
-      
     } catch (error) {
       console.error(`Error fetching movies: ${error}`);
       setErrorMessage("Error fetching");
@@ -58,19 +57,21 @@ updateSearchCount(query, data.results[0]);
     }
   };
 
-  const loadTrendingMovies=async()=>{
-    try{
-const movies=await getTrendingMovies();
-setTrendingMovies(movies);
-    }catch(error){
+  const loadTrendingMovies = async () => {
+    try {
+      const movies = await getTrendingMovies();
+      setTrendingMovies(movies);
+    } catch (error) {
       console.error(`Error fetching: ${error}`);
     }
-  }
+  };
   useEffect(() => {
     fetchMovies(debounceSearchTerm);
   }, [debounceSearchTerm]);
 
-  
+  useEffect(() => {
+    loadTrendingMovies();
+  }, []);
   return (
     <main>
       <div className="pattern"></div>
@@ -86,8 +87,23 @@ setTrendingMovies(movies);
           <Search SearchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
 
+        {trendingMovies.length > 0 && (
+          <section className="trending">
+            <h2>Trending Movies</h2>
+
+            <ul>
+              {trendingMovies.map((movie, index) => (
+                <li key={movie.$id}>
+                  <p>{index + 1}</p>
+                  <img src={movie.poster_url} alt={movie.title} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section className="all-movies">
-          <h2 className="mt-[40px]">All Movies</h2>
+          <h2>All Movies</h2>
 
           {isLoading ? (
             <Spinner />
