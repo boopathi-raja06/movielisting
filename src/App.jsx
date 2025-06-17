@@ -3,7 +3,7 @@ import { useDebounce } from "react-use";
 import Search from "./component/Search";
 import Spinner from "./component/Spinner";
 import Moviecard from "./component/Moviecard";
-import { updateSearchCount } from "../appwrite.js";
+import { getTrendingMovies, updateSearchCount } from "../appwrite.js";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -19,6 +19,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [movieList, setMovieList] = useState([]);
+  const [trendingMoies,setTrendingMovies]=useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [debounceSearchTerm, setDebounceSearchTerm] = useState("");
 
@@ -57,9 +58,19 @@ updateSearchCount(query, data.results[0]);
     }
   };
 
+  const loadTrendingMovies=async()=>{
+    try{
+const movies=await getTrendingMovies();
+setTrendingMovies(movies);
+    }catch(error){
+      console.error(`Error fetching: ${error}`);
+    }
+  }
   useEffect(() => {
     fetchMovies(debounceSearchTerm);
   }, [debounceSearchTerm]);
+
+  
   return (
     <main>
       <div className="pattern"></div>
