@@ -5,5 +5,5 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: './', // <- this makes asset paths relative (important for Netlify)
+  base: '/movielisting/', // <- this makes asset paths relative (important for Netlify)
 })
